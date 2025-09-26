@@ -1,4 +1,4 @@
-const groups = ["violet","vert","jaune","bleu","noir","rouge","blanc","beige1","beige2","beige3"];
+const groups = [,"vert","jaune","bleu","rouge","beige1","beige2","beige3","violet","noir","blanc"];
 const defaultActive = ["vert","bleu","rouge","jaune","beige1","beige2","beige3"];
 let activeGroups = new Set(defaultActive);
 
@@ -60,7 +60,7 @@ function reroll() {
         const ox = parseInt(other.style.left);
         const oy = parseInt(other.style.top);
         const dist = Math.sqrt((ox - x) ** 2 + (oy - y) ** 2);
-        if (dist < 100) { // distance minimale
+        if (dist < 150) { // distance minimale
             overlap = true;
             break;
         }
