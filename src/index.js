@@ -47,20 +47,20 @@ function reroll() {
 
     // place with anti-overlap
     let tries = 0, placed = false;
-    const maxTries = 200;
+    const maxTries = 300;
     const existing = zone.getElementsByClassName("de");
 
     while (!placed && tries < maxTries) {
         tries++;
-        const x = getRandomInt(0, zone.clientWidth - 140);
-        const y = getRandomInt(0, zone.clientHeight - 140);
+        const x = getRandomInt(50, zone.clientWidth - 175);
+        const y = getRandomInt(50, zone.clientHeight - 175);
 
         let overlap = false;
         for (let other of existing) {
         const ox = parseInt(other.style.left);
         const oy = parseInt(other.style.top);
         const dist = Math.sqrt((ox - x) ** 2 + (oy - y) ** 2);
-        if (dist < 150) { // distance minimale
+        if (dist < 200) { // distance minimale
             overlap = true;
             break;
         }
@@ -73,8 +73,8 @@ function reroll() {
     }
     if (!placed) {
         // fallback
-        deImg.style.left = getRandomInt(0, zone.clientWidth - 140) + "px";
-        deImg.style.top = getRandomInt(0, zone.clientHeight - 140) + "px";
+        deImg.style.left = getRandomInt(50, zone.clientWidth - 175) + "px";
+        deImg.style.top = getRandomInt(50, zone.clientHeight - 175) + "px";
     }
     zone.appendChild(deImg);
     });
