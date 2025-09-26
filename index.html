@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>7 wonders dice</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#333333">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+    }
+    header {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 15px;             /* plus de padding */
+        background: #333;
+        color: white;
+    }
+    html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* empêche l’ascenseur */
+    }
+    header button {
+        margin-right: 15px;
+        padding: 12px 20px;        /* boutons plus grands */
+        font-size: 18px;           /* texte plus grand */
+        cursor: pointer;
+    }
+
+    
+
+    .zones {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      height: calc(100vh - 70px);
+      gap: 5px;
+    }
+    .zone {
+      position: relative;
+      background: #fff;
+      border: 1px solid #ccc;
+      overflow: hidden;
+    }
+    .fond {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      z-index: 1;
+    }
+    .fond.top-left { top: 0; left: 0; }
+    .fond.top-right { top: 0; right: 0; }
+    .fond.bottom-left { bottom: 0; left: 0; }
+    .fond.bottom-right { bottom: 0; right: 0; }
+
+    .de {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      z-index: 2;
+      transition: left 0.5s, top 0.5s;
+    }
+
+    /* menu overlay */
+    #menuOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    #menuContent {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-height: 80%;
+      overflow-y: auto;
+    }
+    #menuContent h2 {
+      margin-top: 0;
+    }
+    #menuContent button {
+      margin-top: 10px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-weight: bolder;
+    }
+    /* menu overlay */
+    #menuContent label {
+        display: flex;
+        align-items: center;
+        font-size: 18px;           /* texte plus grand */
+        margin-bottom: 12px;       /* plus d’espace entre les options */
+    }
+
+    #menuContent input[type="checkbox"] {
+        width: 22px;               /* cases à cocher plus grandes */
+        height: 22px;
+        margin-right: 10px;
+    }
+    
+  </style>
+</head>
+<body>
+  <header>
+    <button id="addBtn">+</button>
+    <button id="rerollBtn">reroll</button>
+  </header>
+  <main class="zones">
+    <div class="zone" id="zone1"><img src="./images/fond1.png" class="fond top-left"></div>
+    <div class="zone" id="zone2"><img src="./images/fond2.png" class="fond top-right"></div>
+    <div class="zone" id="zone3"><img src="./images/fond3.png" class="fond bottom-left"></div>
+    <div class="zone" id="zone4"><img src="./images/fond4.png" class="fond bottom-right"></div>
+  </main>
+
+  <!-- menu overlay -->
+  <div id="menuOverlay">
+    <div id="menuContent">
+      <h2>Activer/Désactiver les dés</h2>
+      <div id="diceOptions"></div>
+      <button id="closeMenu">Fermer et relancer</button>
+    </div>
+  </div>
+
+  <script>
+    const groups = ["violet","vert","jaune","bleu","noir","rouge","blanc","beige1","beige2","beige3"];
+    const defaultActive = ["vert","bleu","rouge","jaune","beige1","beige2","beige3"];
+    let activeGroups = new Set(defaultActive);
+
+    const zones = [document.getElementById("zone1"), document.getElementById("zone2"),
+                   document.getElementById("zone3"), document.getElementById("zone4")];
+
+    const rerollBtn = document.getElementById("rerollBtn");
+    const addBtn = document.getElementById("addBtn");
+    const menuOverlay = document.getElementById("menuOverlay");
+    const closeMenu = document.getElementById("closeMenu");
+    const diceOptions = document.getElementById("diceOptions");
+
+    // init menu checkboxes
+    groups.forEach(g => {
+      const label = document.createElement("label");
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = activeGroups.has(g);
+      checkbox.addEventListener("change", () => {
+        if (checkbox.checked) activeGroups.add(g); else activeGroups.delete(g);
+      });
+      label.appendChild(checkbox);
+      label.append(" " + g);
+      diceOptions.appendChild(label);
+      diceOptions.appendChild(document.createElement("br"));
+    });
+
+    function clearZones() {
+      zones.forEach(z => {
+        Array.from(z.getElementsByClassName("de")).forEach(e => e.remove());
+      });
+    }
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function reroll() {
+      clearZones();
+      activeGroups.forEach(g => {
+        const zone = zones[getRandomInt(0, zones.length - 1)];
+        const imgNum = getRandomInt(1,6);
+        const deImg = document.createElement("img");
+        deImg.src = `./images/des_${g}_${imgNum}.jpg`;
+        deImg.className = "de";
+
+        // place with anti-overlap
+        let tries = 0, placed = false;
+        const maxTries = 200;
+        const existing = zone.getElementsByClassName("de");
+
+        while (!placed && tries < maxTries) {
+          tries++;
+          const x = getRandomInt(0, zone.clientWidth - 140);
+          const y = getRandomInt(0, zone.clientHeight - 140);
+
+          let overlap = false;
+          for (let other of existing) {
+            const ox = parseInt(other.style.left);
+            const oy = parseInt(other.style.top);
+            const dist = Math.sqrt((ox - x) ** 2 + (oy - y) ** 2);
+            if (dist < 100) { // distance minimale
+              overlap = true;
+              break;
+            }
+          }
+          if (!overlap) {
+            deImg.style.left = x + "px";
+            deImg.style.top = y + "px";
+            placed = true;
+          }
+        }
+        if (!placed) {
+          // fallback
+          deImg.style.left = getRandomInt(0, zone.clientWidth - 140) + "px";
+          deImg.style.top = getRandomInt(0, zone.clientHeight - 140) + "px";
+        }
+        zone.appendChild(deImg);
+      });
+    }
+
+    rerollBtn.addEventListener("click", reroll);
+    addBtn.addEventListener("click", () => {
+      menuOverlay.style.display = "flex";
+    });
+    closeMenu.addEventListener("click", () => {
+      menuOverlay.style.display = "none";
+      reroll();
+    });
+
+    // first roll
+    window.onload = reroll;
+  </script>
+  <script>
+    if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("Service Worker enregistré"))
+        .catch(err => console.error("Erreur Service Worker:", err));
+    }
+   </script>
+</body>
+</html>
