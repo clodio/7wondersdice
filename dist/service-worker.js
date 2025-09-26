@@ -1,0 +1,1 @@
+self.addEventListener("install",e=>{console.log("Service Worker installé")}),self.addEventListener("activate",e=>{console.log("Service Worker activé")});

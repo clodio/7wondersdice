@@ -1,0 +1,103 @@
+<!doctype html><html lang="fr"><head><meta charset="UTF-8"><title>7 wonders dice</title><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#333333"><script src="bundle.js"></script><style>body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+    }
+    header {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 15px;             /* plus de padding */
+        background: #333;
+        color: white;
+    }
+    html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* empêche l’ascenseur */
+    }
+    header button {
+        margin-right: 15px;
+        padding: 12px 20px;        /* boutons plus grands */
+        font-size: 18px;           /* texte plus grand */
+        cursor: pointer;
+    }
+
+    
+
+    .zones {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      height: calc(100vh - 70px);
+      gap: 5px;
+    }
+    .zone {
+      position: relative;
+      background: #fff;
+      border: 1px solid #ccc;
+      overflow: hidden;
+    }
+    .fond {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      z-index: 1;
+    }
+    .fond.top-left { top: 0; left: 0; }
+    .fond.top-right { top: 0; right: 0; }
+    .fond.bottom-left { bottom: 0; left: 0; }
+    .fond.bottom-right { bottom: 0; right: 0; }
+
+    .de {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      z-index: 2;
+      transition: left 0.5s, top 0.5s;
+    }
+
+    /* menu overlay */
+    #menuOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    #menuContent {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-height: 80%;
+      overflow-y: auto;
+    }
+    #menuContent h2 {
+      margin-top: 0;
+    }
+    #menuContent button {
+      margin-top: 10px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-weight: bolder;
+    }
+    /* menu overlay */
+    #menuContent label {
+        display: flex;
+        align-items: center;
+        font-size: 18px;           /* texte plus grand */
+        margin-bottom: 12px;       /* plus d’espace entre les options */
+    }
+
+    #menuContent input[type="checkbox"] {
+        width: 22px;               /* cases à cocher plus grandes */
+        height: 22px;
+        margin-right: 10px;
+    }</style><script defer="defer" src="bundle.js"></script></head><body><header><button id="addBtn">+</button> <button id="rerollBtn">reroll</button></header><main class="zones"><div class="zone" id="zone1"><img src="./images/fond1.png" class="fond top-left"></div><div class="zone" id="zone2"><img src="./images/fond2.png" class="fond top-right"></div><div class="zone" id="zone3"><img src="./images/fond3.png" class="fond bottom-left"></div><div class="zone" id="zone4"><img src="./images/fond4.png" class="fond bottom-right"></div></main><div id="menuOverlay"><div id="menuContent"><h2>Activer/Désactiver les dés</h2><div id="diceOptions"></div><button id="closeMenu">Fermer et relancer</button></div></div></body></html>
