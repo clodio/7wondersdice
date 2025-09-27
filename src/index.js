@@ -5,12 +5,16 @@ let activeGroups = new Set(defaultActive);
 const zones = [document.getElementById("zone1"), document.getElementById("zone2"),
                 document.getElementById("zone3"), document.getElementById("zone4")];
 
-const rerollBtn = document.getElementById("rerollBtn");
+// const rerollBtn = document.getElementById("rerollBtn");
 const addBtn = document.getElementById("addBtn");
 const menuOverlay = document.getElementById("menuOverlay");
 const closeMenu = document.getElementById("closeMenu");
 const diceOptions = document.getElementById("diceOptions");
-
+const zone1 = document.getElementById("zone1")
+const zone2 = document.getElementById("zone2")
+const zone3 = document.getElementById("zone3")
+const zone4 = document.getElementById("zone4")
+const zonesAll = document.getElementById("zones")
 // init menu checkboxes
 groups.forEach(g => {
     const label = document.createElement("label");
@@ -80,7 +84,7 @@ function reroll() {
     });
 }
 
-rerollBtn.addEventListener("click", reroll);
+// rerollBtn.addEventListener("click", reroll);
 addBtn.addEventListener("click", () => {
     menuOverlay.style.display = "flex";
 });
@@ -88,6 +92,11 @@ closeMenu.addEventListener("click", () => {
     menuOverlay.style.display = "none";
     reroll();
 });
+zone1.addEventListener("click", reroll);
+zone2.addEventListener("click", reroll);
+zone3.addEventListener("click", reroll);
+zone4.addEventListener("click", reroll);
+zonesAll.addEventListener("click", reroll);
 
 // first roll
 window.onload = reroll;
