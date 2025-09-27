@@ -3,7 +3,7 @@
   "short_name": "7wonders_dice",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#009fe3",
   "theme_color": "#000000",
   "icons": [
     {
